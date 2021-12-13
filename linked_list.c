@@ -3,63 +3,82 @@ struct node{
 	int data;
 	struct node *link
 	}*head=NULL;
-int flag=0;
 void create(int val){
 	if(head==NULL){
 		struct node *newnode=(struct node *)malloc(sizeof(struct node));
 		newnode->data=val;
 		newnode->link=NULL;
 		head=newnode;
-		flag=flag+1;
-		traverse();
 	}
 }
-
-void insert(int pos,int val){
-	int vval,vpos;
-	if (flag==0){
-		printf("please create a list");
-	}
-	else if(pos<=flag+1){
-		struct node *p=head;
-		struct node *newnode=(struct node *)malloc(sizeof(struct node));
-		for(int i=1;i<pos-1;i++){
-		p=p->link;
-		}
-		newnode->data=val;
-		newnode->link=p->link;
-		p->link=newnode;
-		flag=flag+1;
-		traverse();
-	}
-	else{
-		printf("please enter a valid position and value");
-		scanf("%d%d",&vpos,&vval);
-		insert(vpos,vval);
-	}			
+void insert_beg(int val){
+	struct node *newnode=(struct node *)malloc(sizeof(struct node));
+	newnode->data=val;
+	newnode->link=head;
+	head=newnode;
+    printf("current list: ");
+    traverse();
 }
-
-void delete(int pos){
-	struct node *p=head,*prev;
-	if(pos==1){
-		head=p->link;
-		flag--;
-		traverse();
+void insert_end(int val){
+	struct node *temp=head;
+	struct node *newnode=(struct node *)malloc(sizeof(struct node));
+	while(temp->link!=NULL){
+		temp=temp->link;
 	}
-	else if(pos<=flag & pos>1){
-	for(int i=1;i<=pos-1;i++){
-		prev=p;
-		p=p->link;
-	}
-	prev->link=p->link;
-	flag--;
-	traverse();
-	free(p);
-	}
-	else
-		printf("enter valid position");
+	newnode->data=val;
+	newnode->link=NULL;
+	temp->link=newnode;
+    printf("current list: ");
+    traverse();
 }
-
+void insert_pos(int pos,int val){
+	struct node *temp=head,*p;
+	struct node *newnode=(struct node *)malloc(sizeof(struct node));
+	for(int i=1;i<pos;i++){
+		p=temp;
+		temp=temp->link;
+	}
+	newnode->data=val;
+	newnode->link=temp;
+	p->link=newnode;
+    printf("current list: ");
+    traverse();
+}
+void delete_beg(){
+	int val;
+	struct node *temp=head;
+	val=temp->data;	
+	head=temp->link;
+	free(temp);
+    printf("%d deleted\ncurrent list: ",val);
+    traverse();
+}
+void delete_end(){
+	int val;
+	struct node *temp=head,*p;
+	while(temp->link!=NULL){
+		p=temp;
+		temp=temp->link;
+	}
+	val=temp->data;
+	p->link=NULL;
+	free(temp);
+    printf("%d deleted\ncurrent list: ",val);
+    traverse();
+}
+void delete_pos(int pos){
+	int val;
+	struct node *temp=head,*p;
+	for(int i=1;i<pos;i++){
+		p=temp;
+		temp=temp->link;
+	}
+	val=temp->data;
+	p->link=temp->link;
+	free(temp);
+    printf("%d deleted\ncurrent list: ",val);
+    traverse();
+}
 void traverse(){
 	struct node *p=head;
 	while(p->link!=NULL){
@@ -68,29 +87,40 @@ void traverse(){
 	}
 	printf("%d",p->data);
 }
-
+	
 void main(){
-    int n,pos,val,exit;
+    int n,pos,val;
     do{
-    printf("1.create list\n2.insert\n3.delete\n4.traverse\n");
+    printf("\n1.create list\n2.insert begining\n3.insert end\n4.insert at position\n5.delete begining\n6.delete end\n7.delete at position\n8.Display\n9.exit\n");
     scanf("%d",&n);
     switch(n){
-        case 1:printf("enter value\n");
+        case 1:printf("enter value: ");
                 scanf("%d",&val);
                 create(val);
                 break;
-        case 2:printf("enter position and value\n");
-                scanf("%d%d",&pos,&val);
-                insert(pos,val);
+        case 2:printf("enter value: ");
+                scanf("%d",&val);
+                insert_beg(val);
                 break;
-        case 3:printf("enter position\n");
-               scanf("%d",&pos);
-               delete(pos);
-               break;
-        case 4:traverse();
-                 break;
+        case 3:printf("enter value: ");
+                scanf("%d",&val);
+		insert_end(val);
+                break;
+        case 4:printf("enter position and value: ");
+                scanf("%d%d",&pos,&val);
+		insert_pos(pos,val);		
+                break;
+	case 5:delete_beg(val);
+                break;
+        case 6:delete_end(val);
+                break;
+        case 7:printf("enter position: ");
+                scanf("%d",&pos);
+		delete_pos(pos);		
+                break;
+	case 8:traverse();
+		break;
+	case 9:break;
     }
-    printf("\ndo u want to continue 1/0");
-    scanf("%d",&exit);
-    }while(exit==1);
+    }while(n!=9);
 }
